@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.concurrent.*;
 
 public class HTTPServer {
-    private static final Map<String, Method> services = new HashMap<>();
+    public static final Map<String, Method> services = new HashMap<>();
     private static String staticFilesDir = "/app/public";
 
     private static volatile boolean running = true; 
