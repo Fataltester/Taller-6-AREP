@@ -1,23 +1,55 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-<title>Form Example</title>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>Gestión de Propiedades</title>
+  
+  <link rel="stylesheet" href="/style.css">
+
+
 </head>
 <body>
+  <h1>CRUD - Gestión de Propiedades</h1>
 
-<h1>Form with GET</h1>
-<form action="/hello">
-<label for="name">Name:</label><br>
-<input type="text" id="name" name="name" value=""><br><br>
-<input type="button" value="Submit" onclick="loadGetMsg()">
-</form>
-<div id="getrespmsg"></div>
- 
-<script src="response.js"></script>
-<img src="cat.jpg" alt="gatito">
+  <section>
+    <h2 id="form-title">Nueva Propiedad</h2>
+    <form id="property-form">
+      <input type="hidden" id="property-id">
+      
+      <label>Dirección:</label>
+      <input type="text" id="address" required><br>
 
+      <label>Precio:</label>
+      <input type="number" id="price" required><br>
+
+      <label>Tamaño (m²):</label>
+      <input type="number" id="size" required><br>
+
+      <label>Descripción:</label>
+      <textarea id="description"></textarea><br>
+
+      <button type="submit">Guardar</button>
+      <button type="button" onclick="resetForm()">Cancelar</button>
+    </form>
+  </section>
+
+  <section>
+    <h2>Listado de Propiedades</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Dirección</th>
+          <th>Precio</th>
+          <th>Tamaño</th>
+          <th>Descripción</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="property-list"></tbody>
+    </table>
+  </section>
+
+  <script src="/response.js"></script>
 </body>
 </html>

@@ -2,11 +2,14 @@ FROM openjdk:17
  
 WORKDIR /app
  
-ENV PORT=35000
- 
-COPY /target/classes ./classes
-COPY /target/dependency /usrapp/bin/dependency
-COPY src/main/resources/public ./public
+EXPOSE 8080
 
- 
-CMD ["java","-cp","./classes:./dependency/*","edu.eci.arep.concurrencia.MicroSpringboot"]
+ENV SPRING_DATASOURCE_USERNAME root
+ENV SPRING_DATASOURCE_PASSWORD secret
+ENV SPRING_DATASOURCE_URL jdbc:mysql://34.224.216.43:3306/properties?createDatabaseIfNotExist=true
+
+# Copiar el jar empaquetado con todas las dependencias
+COPY target/Taller5arep-0.0.1-SNAPSHOT.jar app.jar
+
+# Ejecutar el jar
+ENTRYPOINT ["java","-jar","app.jar"]

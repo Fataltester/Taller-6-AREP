@@ -1,22 +1,21 @@
 version: '2'
-services:
-  web:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: web
-    ports:
-      - "8087:6000"
-  db: 
-    image: mongo:8-noble
-    container_name: db
-    volumes:
-      - mongodb:/data/db
-      - mongodb_config:/data/configdb
-    ports:
-      - 27017:27017
-    command: mongod
 
-volumes:
-    mongodb:
-    mongodb_config:
+services:
+  app:
+    build: .
+    container_name: lab5arep
+    restart: always
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://34.224.216.43:3306/properties?createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: secret
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.MariaDBDialect
+    ports:
+      - "8080:8080"
+    networks:
+      - app_network
+
+networks:
+  app_network:
+   driver: bridge
