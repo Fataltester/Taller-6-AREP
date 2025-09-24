@@ -78,7 +78,7 @@ http://ec2-34-227-221-17.compute-1.amazonaws.com:8080/?
 
 <img width="1761" height="485" alt="image" src="https://github.com/user-attachments/assets/16a33dd7-d8df-4bcc-9fca-1af734f4094f" />
 
-
+[video del funcionamiento](https://github.com/Fataltester/Taller-5-AREP/blob/main/despliegue%20lab%205.mp4)
 
 ### Contruido con
 
