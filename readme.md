@@ -1,7 +1,6 @@
-# Taller de trabajo individual en patrones arquitecturales
-Talleres relacionados con la clase https://github.com/Fataltester/Taller-5-AREPJPA
+# Secure Application Design
 ## Resumen
-En este taller se desarrollo un CRUD con springboot el cual esta contenido en una instacia EC2 que esta conectada a otra instancia que ofrece el servicio mySQL para la persistencia, en el sistema se administra un CRUD para propiedades, donde cada propiedad cuenta con un ID generado automáticamente, dirección, precio, tamaño y descripción.
+En este taller se desarrollo la seguridad de autenticación por medio de certificados por "Let's Encode", DNS gratuitos dados por duckdns y TLS 
 
 ## PreRequisitos
 Para el proyecto debemos configurar un entorno maven para armar el proyecto, para esto hay diferentes opciones como visual studio, intellij, etc. Si se quiere trabajar sobre estos se debe configurar e instalar maven para su funcionamiento, pero, para este laboratorio y facilitarme este proceso utilicé Netbeans el cual me ahorra ese proceso, puede instalar el ambiente de desarrollo en su página oficial [aquí](https://netbeans.apache.org/front/main/index.html). También debemos tener java 17 instalado y git para poder clonar el repositorio actual.
@@ -10,32 +9,31 @@ Además de tener instalado maven, debe tener docker instalado en su computador p
 
 1. Vamos a clonar el repositorio con el siguiente comando
 ```bash
-git clone https://github.com/Fataltester/Taller-2-AREP.git]
+git clone https://github.com/Fataltester/Taller-6-AREP.git]
 ```
 
 2. Construimos el proyecto con mvn clean package
    
 3. corremos el docker
 ```bash
-docker run -d   --name lab5arep   -p 8080:8080   -e SPRING_DATASOURCE_URL=jdbc:mysql://34.224.216.43:3306/properties?createDatabaseIfNotExist=true   -e SPRING_DATASOURCE_USERNAME=root   -e SPRING_DATASOURCE_PASSWORD=secret   fataltester229/lab5:latest
+docker run -d   --name lab6arep   -p 8443:8443   -e SPRING_DATASOURCE_URL=jdbc:mysql://13.217.196.150:3306/properties?createDatabaseIfNotExist=true   -e SPRING_DATASOURCE_USERNAME=root   -e SPRING_DATASOURCE_PASSWORD=TuContraseñaSegura123!   fataltester229/lab6:latest
+mvn spring-boot:run
 ```
+Ya con eso podemos acceder a la página del login
+<img width="645" height="522" alt="image" src="https://github.com/user-attachments/assets/f832d663-5010-4d45-a44e-cbb3a8782e12" />
 
-<img width="960" height="98" alt="image" src="https://github.com/user-attachments/assets/ae8d7de1-b72e-474b-a769-4c5ee1456756" />
+La maquina de apache puede traer archivos estáticos como
+* auth.html
+* index.html
+* style.css
+* styles.css
+* auth.js
+Y para acceder al los servicio rest de propiedades utilizamos las mismas rutas del taller 5
 
-
-<img width="1876" height="544" alt="image" src="https://github.com/user-attachments/assets/d32f257a-7053-4b94-a413-7b0554b22267" />
-
-aquí ofrecemos los servicios get, post, put y delete para las propiedades y cada propiedad
 ## Arquitectura
 Tenemosla siguiente arquitectura
 
-Capa de Presentación -> el main que esta encargado de levantar el servidor.
 
-Capa de Negocio -> capa donde presentamos el modelo(estructura de los objetos principales), repositorio(persistencia) y servicio que implementa la lógica.
-
-Componente de persistencia y despliegue -> la persistencia contenida en la instancia de aws y los servicios ofrecidos por las instancias.
-
-Capa de Controladores -> los controladores definidos @RestController.
 
 ## Inicializar con docker y AWS
 
@@ -43,42 +41,51 @@ Capa de Controladores -> los controladores definidos @RestController.
 Es importante tener en cuenta los dos archivos docker que creamos dentro del proyecto
 Docker file:
 
-<img width="875" height="338" alt="image" src="https://github.com/user-attachments/assets/710d563f-53b4-4b04-af1c-363805e95234" />
+<img width="864" height="350" alt="image" src="https://github.com/user-attachments/assets/cb0d3262-2c95-4e70-a22c-6e559a5812af" />
 
 Docker compose:
 
-<img width="937" height="434" alt="image" src="https://github.com/user-attachments/assets/c60dafc4-9eee-4872-964d-5f66f2dab321" />
+<img width="822" height="661" alt="image" src="https://github.com/user-attachments/assets/a7736791-d902-4b5d-bdd6-f5312d3921fd" />
+
 
 Desde la maquina se suben los cambios a dockerhub para poder bajarlos dentro de la instancia ec2 que contiene el back
 
 ```bash
-docker build -t fataltester229/lab5:latest .
-docker push fataltester229/lab5:latest  
+docker build -t fataltester229/lab6:latest .
+docker push fataltester229/lab6:latest  
 ```
+<img width="1104" height="755" alt="image" src="https://github.com/user-attachments/assets/4d4a9d71-264a-4c18-aba0-1d0839993f61" />
+
 
 # AWS
-Para AWS creamos una instancia EC2 para el back y otra para mySQL, ingresamos a la instancia del back por ssh y ejecutamos los siguientes comandos, tener en cuenta que mySQL ya esta instalado en la otra instancia
+Para AWS creamos las instancia EC2 para el back y mysql(springserver) y otra que sirve los archivos estáticos del front(apacheserver), ingresamos a la instancia de springserver e instalamos docker y mysql
 
 ```bash
 sudo yum update -y
 sudo yum install docker
 sudo service docker start
 sudo usermod -a -G docker ec2-user
-sudo docker pull fataltester229/lab5:latest 
-sudo docker run -d   --name lab5arep   -p 8080:8080   -e SPRING_DATASOURCE_URL=jdbc:mysql://34.224.216.43:3306/properties?createDatabaseIfNotExist=true   -e SPRING_DATASOURCE_USERNAME=root   -e SPRING_DATASOURCE_PASSWORD=secret   fataltester229/lab5:latest
-
+sudo docker pull fataltester229/lab6:latest 
+sudo docker run -d   --name lab6arep   -p 8080:8080   -e SPRING_DATASOURCE_URL=jdbc:mysql://13.217.196.150:3306/properties?createDatabaseIfNotExist=true   -e SPRING_DATASOURCE_USERNAME=root   -e SPRING_DATASOURCE_PASSWORD=TuContraseñaSegura123!   fataltester229/lab6:latest
 ```
+Luego definimos los DNS
 
-Para verificar el funcionamiento dentro de la instancia realizamos la consulta a la siguiente URL
+<img width="1259" height="441" alt="image" src="https://github.com/user-attachments/assets/9069fe4f-cc02-498a-b45c-190f9103a46b" />
 
+Verificamos que el grupo de seguridad permita las comunicaciones, cabe aclarar que las dos instancias pertenecen al mismo grupo
+
+<img width="1126" height="398" alt="image" src="https://github.com/user-attachments/assets/54313a5e-956f-470d-a658-7078b8c17d0f" />
+
+Luego se ingresa a la instancia apacheserver por ssh y se inicializa la bd, traemos los cambios de dockerhub y ejecutamos el contenedor
 ```bash
-http://ec2-34-227-221-17.compute-1.amazonaws.com:8080/?
+ docker pull fataltester229/lab6
+ docker run -d -p 8443:8443 --name lab6 fataltester229/lab6:latest
+ docker ps
 ```
-## Caputas del funcionamiento
+Y como podemos ver la conexión segura esta establecida
 
-<img width="1761" height="485" alt="image" src="https://github.com/user-attachments/assets/16a33dd7-d8df-4bcc-9fca-1af734f4094f" />
+<img width="583" height="233" alt="image" src="https://github.com/user-attachments/assets/182db267-b3e0-4854-9e5f-801a00dd3e2a" />
 
-[video del funcionamiento](https://github.com/Fataltester/Taller-5-AREP/blob/main/despliegue%20lab%205.mp4)
 
 ### Contruido con
 
